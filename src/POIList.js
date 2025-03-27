@@ -21,7 +21,7 @@ const POIList = () => {
                         "Content-Type": "application/json"
                     }
                 });
-                console.log('Fetched POIs:', response.data); // Debug log
+                // console.log('Fetched POIs:', response.data); 
                 setPois(response.data);
                 fetchParametersForPOIs(response.data);
             } catch (error) {
@@ -39,7 +39,7 @@ const POIList = () => {
         const parameters = {};
         for (const poi of pois) {
             try {
-                // if (poi.id === 9) { // Testing condition removed
+                // if (poi.id === 9) { //
                     const [peopleQtyRes, rainRes, tempRes, windRes] = await Promise.all([
                         axios.get(`/api/v1/pois/${poi.id}/parameters/peopleqty/value`, { withCredentials: true }),
                         axios.get(`/api/v1/pois/${poi.id}/parameters/rain/value`, { withCredentials: true }),
@@ -53,7 +53,7 @@ const POIList = () => {
                         temperature: tempRes.data?.value ?? tempRes.data ?? 'N/A',
                         wind: windRes.data?.value ?? windRes.data ?? 'N/A'
                     };
-                // } else { // Else block removed
+                // } else { //
                 //     parameters[poi.id] = {
                 //         peopleQty: 'N/A',
                 //         rain: 'N/A',
@@ -121,7 +121,7 @@ const POIList = () => {
                         wind: 'N/A'
                     };
 
-                    console.log(`Rendering POI ${poi.id} with params:`, poiParams); // Debug log
+                    // console.log(`Rendering POI ${poi.id} with params:`, poiParams); // Debug log
 
                     return (
                         <div
