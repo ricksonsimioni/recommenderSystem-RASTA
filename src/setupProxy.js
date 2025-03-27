@@ -1,0 +1,16 @@
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = function(app) {
+  app.use(
+    '/api',
+    createProxyMiddleware({
+      target: 'https://pms.rasta-project.tech',
+      changeOrigin: true,
+      secure: false,
+      cookieDomainRewrite: 'localhost',
+      onProxyReq: (proxyReq) => {
+        proxyReq.setHeader('Cookie', 'CF_Authorization=eyJhbGciOiJSUzI1NiIsImtpZCI6IjRkMjMxNmI2OThiYzIwZGY5M2VhODEwYTNjODRjZDcwYzFlZjY4YmRmMjBiYjhjNDIwNGQyNmVlODQ2NjJlMmIifQ.eyJhdWQiOlsiNTUwZTJjMjk2YjlkZWY2YjRmMmFlYjk5NGUwMmMyNTRmODE4ODYxZWJkYzk3MjlkODQxNWY1Y2U0MzU0ZmFkNSJdLCJlbWFpbCI6InJpY2tzb24ucGVyZWlyYUBnc3NpLml0IiwiZXhwIjoxNzQ1NDQwMDE2LCJpYXQiOjE3NDI4MTIwMTYsIm5iZiI6MTc0MjgxMjAxNiwiaXNzIjoiaHR0cHM6Ly9jc2dzc2kuY2xvdWRmbGFyZWFjY2Vzcy5jb20iLCJ0eXBlIjoiYXBwIiwiaWRlbnRpdHlfbm9uY2UiOiI2dGFvTlVubnRsUUFKa2tvIiwic3ViIjoiYzkxMDRmYzAtODRiYS01NTk1LWJiOTktMWRlZTM5ZjZhMjZhIiwiY291bnRyeSI6IklUIn0.J6NfgIMH49lvo1LOpcyw5UR8mJaqppQIpjs4kZSgPd1PNPCipaDwt_DlHy2pnC4rKEBkj5cP0aJvuxJadj3zYwetsiBggUErVGuR5vOa3MAR6jHMv5uWCAoc8EolXJzpyUVfng-sE4OnCwAlgBKeUQnvSFHyZPijetyr4xcBWCaPnopHlPtTj9ZIxxlNXErfsktgByj_y4uAYkVEpG4lu4VjGNCuZeW2d_Rljf-4QmmLaNRW7gAin1Dfsc4VY3w4Gt1XuofKhdDl7LbLWYpWUF0y0N22iW5DU_usl8rGwYHhnZQLRHyqd1yS44bJBtRZ4tQQBQhVnyVNvdq3DWusZA; JSESSIONID=F6D395D67199C6F327D688E7FB61375A; cf_clearance=3nmCOy8WcoFH06rnp1Jsl7ypshKOzZFK0P2CrZFekDw-1742925377-1.2.1.1-CskBbs7XVe32xCsD65BgPiCOxOTA11PlspvOUAK8MFWNxus7oG0kBl8y0yWxOEJqXY67U4tvXZGk4KsIjDi1.ryd.xaVraHkhdEOIkEZNUKOFhwawEP2UJmmr6_Jch5uhtpooT2MCrTAK96sVaVIRXyHWiPuAEw3BVApLGas7ZXlpdYv00kv2T2R37C.5.nTahnmKhqWzphVl9aCM7UI5zp68hYZRT8tHOR1fXESqHC7Zm466iPjDcBtkE8Cop4EgVl0KONbByCnQajELEzNQIJEF1ulv.KEKJ40hckHLnV8vrzzlL9lGZdv.VzFzj3qyPimsLNVqJnzHnmAPZ_P46GJaYb14RotBep4pMDLZ8E');
+      }
+    })
+  );
+};
