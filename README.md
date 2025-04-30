@@ -1,6 +1,6 @@
 # recommenderSystem-RASTA
 
-This project is a web-based recommender system prototype developed as part of the Realtà Aumentata e Story-Telling Automatizzato per la valorizzazione di Beni Culturali ed Itinerari (RASTA) project. It provides personalised itinerary suggestions based on user preferences such as fitness level, available duration, and optional criteria like crowd levels and weather conditions.
+This project is a web-based recommender system prototype developed as part of the project Realtà Aumentata e Story-Telling Automatizzato per la valorizzazione di Beni Culturali ed Itinerari (RASTA). It provides personalised itinerary suggestions based on user preferences such as fitness level, available duration, and optional criteria like crowd levels and weather conditions.
 
 ## Getting Started with Create React App
 
@@ -68,7 +68,27 @@ All commands will still work, but reference the copied configuration.
 
 [Troubleshooting guide](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-## Project Features
+## Project Purpose
 
-- Preferences form for itinerary recommendations
-- Map view using OpenStreet
+This UI supports experimentation with adaptive nature-based itinerary recommendations. It allows testing of:
+
+- Fitness and duration-based filtering of itineraries
+- Inclusion/exclusion of POIs by user selection
+- Optional constraints like crowdedness and weather
+- Map-based visualisation of selected routes
+- Integration with simulated sensor data from PMS
+
+## Functional Overview
+
+- **Preferences Page**: Form interface where users select fitness level (Beginner, Intermediate, Advanced), max duration, and constraints (e.g. avoid crowded places).
+- **Recommendations Page**: Displays top 5 itineraries sorted by preference fit. Routes visualised on OpenStreetMap.
+- **POI List Page**: Interactive POI selection. Selected POIs influence the recommendation logic.
+- **Itinerary List Page**: Shows all available itineraries fetched from the backend, for inspection or manual comparison.
+
+## Technologies
+
+- **React** for UI rendering
+- **Leaflet + React-Leaflet** for map integration
+- **REST API** communication with PMS backend
+- **Axios** for HTTP requests
+- **Tailwind CSS** (if installed) for styling (optional)
