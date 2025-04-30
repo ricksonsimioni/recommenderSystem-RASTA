@@ -6,7 +6,7 @@ html {
     padding: 20px;
     font-family: Arial, sans-serif;
     max-width: 800px;
-    margin: 0 auto; /* Center the container */
+    margin: 0 auto; 
 }
 
 h1 {
@@ -19,11 +19,11 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
 }
 
 thead {
-    background-color: #007BFF; /* Bootstrap primary color */
+    background-color: #007BFF; 
     color: #fff;
 }
 
@@ -34,19 +34,19 @@ th, td {
 }
 
 th {
-    font-weight: bold; /* Make header bold */
+    font-weight: bold; 
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for even rows */
+    background-color: #f9f9f9; 
 }
 
 tbody tr:hover {
-    background-color: #f1f1f1; /* Slightly darker on hover */
+    background-color: #f1f1f1; 
 }
 
 tbody tr:last-child td {
-    border-bottom: none; /* Remove border for the last row */
+    border-bottom: none; 
 }
 
 p {
@@ -55,21 +55,20 @@ p {
     font-size: 16px;
 }
 
-/* Additional styles for better visibility */
 @media (max-width: 600px) {
     table {
-        font-size: 14px; /* Smaller font size for mobile */
+        font-size: 14px; 
     }
 }
 
 .notification {
-    background-color: #f9f9c5; /* Light yellow background */
-    border: 1px solid #e6e600; /* Yellow border */
-    color: #555; /* Dark text */
+    background-color: #f9f9c5; 
+    border: 1px solid #e6e600; 
+    color: #555; 
     padding: 10px;
     margin: 10px 0;
-    text-align: center; /* Center the text */
-    border-radius: 5px; /* Rounded corners */
+    text-align: center; 
+    border-radius: 5px; 
 }
 
 

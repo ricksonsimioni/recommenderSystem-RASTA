@@ -27,8 +27,9 @@ const Preferences = () => {
     const [windCondition, setWindCondition] = useState(''); 
     const [rainCondition, setRainCondition] = useState(''); 
     const [quietnessCondition, setQuietnessCondition] = useState('');
+    const [poiParameters, setPoiParameters] = useState({});
     const { state } = useLocation();
-    const selectedPOIs = state?.selectedPOIs || []; // Retrieve passed POIs
+    const selectedPOIs = state?.selectedPOIs || [];
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,6 +55,93 @@ const Preferences = () => {
         fetchCategories();
     }, []);
 
+    useEffect(() => {
+        if (selectedPOIs.length > 0) {
+            const fetchPOIParameters = async () => {
+                const params = {};
+                for (const poi of selectedPOIs) {
+                    try {
+                        const [peopleQtyRes, rainRes, windRes] = await Promise.all([
+                            axios.get(`/api/v1/pois/${poi.id}/parameters/peopleqty/value`, { withCredentials: true }),
+                            axios.get(`/api/v1/pois/${poi.id}/parameters/rain/value`, { withCredentials: true }),
+                            axios.get(`/api/v1/pois/${poi.id}/parameters/wind/value`, { withCredentials: true })
+                        ]);
+                        
+                        params[poi.id] = {
+                            peopleQty: peopleQtyRes.data?.value ?? peopleQtyRes.data ?? 0,
+                            rain: rainRes.data?.value ?? rainRes.data ?? 0,
+                            wind: windRes.data?.value ?? windRes.data ?? 0
+                        };
+                    } catch (error) {
+                        console.error(`Failed to fetch parameters for POI ${poi.id}:`, error);
+                        params[poi.id] = {
+                            peopleQty: 0,
+                            rain: 0,
+                            wind: 0
+                        };
+                    }
+                }
+                setPoiParameters(params);
+            };
+            fetchPOIParameters();
+        }
+    }, [selectedPOIs]);
+
+    const getWindCondition = (windSpeed) => {
+        if (windSpeed <= 5) return 'no-wind';
+        if (windSpeed <= 20) return 'normal-wind';
+        return 'strong-wind';
+    };
+
+    const getRainCondition = (rainProbability) => {
+        if (rainProbability <= 10) return 'no-rain';
+        if (rainProbability <= 40) return 'light-rain';
+        return 'heavy-rain';
+    };
+
+    const getQuietnessCondition = (peopleCount) => {
+        if (peopleCount <= 30) return 'quiet';
+        return 'no-quiet';
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        
+        // Calculate averages from selected POIs
+        const averages = selectedPOIs.reduce((acc, poi) => {
+            const params = poiParameters[poi.id] || {};
+            return {
+                wind: (acc.wind || 0) + (params.wind || 0),
+                rain: (acc.rain || 0) + (params.rain || 0),
+                peopleQty: (acc.peopleQty || 0) + (params.peopleQty || 0),
+                count: acc.count + 1
+            };
+        }, { count: 0 });
+
+        // Determine final preferences
+        const finalState = {
+            fitnessLevel,
+            duration,
+            windCondition: windCondition || (averages.count > 0 
+                ? getWindCondition(averages.wind / averages.count) 
+                : 'normal-wind'),
+            rainCondition: rainCondition || (averages.count > 0 
+                ? getRainCondition(averages.rain / averages.count) 
+                : 'no-rain'),
+            quietPlace: quietPlace || (averages.count > 0 
+                ? getQuietnessCondition(averages.peopleQty / averages.count) === 'quiet'
+                : false),
+            selectedPOIs,
+            calculatedAverages: averages.count > 0 ? {
+                wind: averages.wind / averages.count,
+                rain: averages.rain / averages.count,
+                peopleQty: averages.peopleQty / averages.count
+            } : null
+        };
+
+        navigate('/recommendation', { state: finalState });
+    };
+
     const handleCategoryChange = (event) => {
         const categoryName = event.target.value;
         if (categoryName && !selectedCategories.includes(categoryName)) {
@@ -65,60 +153,14 @@ const Preferences = () => {
         setSelectedCategories(selectedCategories.filter((c) => c !== category));
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        navigate('/recommendation', {
-            state: {
-                fitnessLevel,
-                duration,
-                windCondition,
-                rainCondition,
-                quietPlace,
-                selectedPOIs, // Pass selected POIs
-            },
-        });
-    };
-
     const toggleQuietPlace = () => setQuietPlace((prevState) => !prevState);
 
     return (
         <div className="preferences-container">
             <h1>Select your preferences</h1>
             <form onSubmit={handleSubmit}>
-                {/* <div className="selected-pois">
-                    <h3>Selected POIs:</h3>
-                    <ul>
-                        {selectedPOIs.map((poi, index) => (
-                            <li key={index}>{poi}</li>
-                        ))}
-                    </ul>
-                </div> */}
-                {/* <div className="form-group">
-                    <label htmlFor="fitnessLevel">Fitness Level:</label>
-                    <select
-                        id="fitnessLevel"
-                        value={fitnessLevel}
-                        onChange={(e) => setFitnessLevel(e.target.value)}
-                    >
-                        <option value="" disabled>Select difficulty</option>
-                        {difficulties.map((difficulty, index) => (
-                            <option key={index} value={difficulty.acronym}>
-                                {difficulty.acronym} - {difficulty.name}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
-
                 <div className="form-group">
                     <label htmlFor="duration">Duration:</label>
-                    {/* <input
-                        type="number"
-                        id="duration"
-                        value={duration}
-                        onChange={(e) => setDuration(e.target.value)}
-                        placeholder="e.g., 30"
-                        required
-                    /> */}
                     <div className="weather-options">
                         <div
                             className={`weather-option ${duration === 60 ? 'active' : ''}`}
@@ -171,8 +213,6 @@ const Preferences = () => {
                     </div>
                 </div>
 
-
-                {/* Wind Condition Selector */}
                 <div className="form-group">
                     <label>Wind Conditions:</label>
                     <div className="weather-options">
@@ -181,7 +221,7 @@ const Preferences = () => {
                             onClick={() => setWindCondition('no-wind')}
                         >
                             <img src={noWind} alt="No Wind" />
-                            <span>I would rather to go a place with no wind.</span>
+                            <span>I would rather go to a place with no wind.</span>
                         </div>
                         <div
                             className={`weather-option ${windCondition === 'normal-wind' ? 'active' : ''}`}
@@ -200,7 +240,6 @@ const Preferences = () => {
                     </div>
                 </div>
 
-                {/* Rain Condition Selector */}
                 <div className="form-group">
                     <label>Rain Conditions:</label>
                     <div className="weather-options">
@@ -209,7 +248,7 @@ const Preferences = () => {
                             onClick={() => setRainCondition('no-rain')}
                         >
                             <img src={goodWeather} alt="No Rain" />
-                            <span>I would rather to go a place with no rain.</span>
+                            <span>I would rather go to a place with no rain.</span>
                         </div>
                         <div
                             className={`weather-option ${rainCondition === 'light-rain' ? 'active' : ''}`}
@@ -222,13 +261,12 @@ const Preferences = () => {
                             className={`weather-option ${rainCondition === 'heavy-rain' ? 'active' : ''}`}
                             onClick={() => setRainCondition('heavy-rain')}
                         >
-                            <img src={storm}  alt="Heavy Rain" />
+                            <img src={storm} alt="Heavy Rain" />
                             <span>I would love an adventure under the heavy rain.</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Rain Condition Selector */}
                 <div className="form-group">
                     <label>What is your preference about quietness?:</label>
                     <div className="weather-options">
@@ -236,14 +274,14 @@ const Preferences = () => {
                             className={`weather-option ${quietnessCondition === 'quiet' ? 'active' : ''}`}
                             onClick={() => setQuietnessCondition('quiet')}
                         >
-                            <img src={silence} alt="I would rather a quieter place." />
+                            <img src={silence} alt="Quiet place" />
                             <span>I would rather a quieter place.</span>
                         </div>
                         <div
                             className={`weather-option ${quietnessCondition === 'no-quiet' ? 'active' : ''}`}
                             onClick={() => setQuietnessCondition('no-quiet')}
                         >
-                            <img src={noise} alt="I do not care about the noise." />
+                            <img src={noise} alt="Noisy place" />
                             <span>I do not care about the noise.</span>
                         </div>
                     </div>

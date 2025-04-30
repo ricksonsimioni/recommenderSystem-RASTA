@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './styles/ItineraryList.css'; // Import the CSS file
+import './styles/ItineraryList.css';
 
 const ItineraryList = () => {
     const [itineraries, setItineraries] = useState([]);
@@ -25,18 +25,15 @@ const ItineraryList = () => {
         fetchItineraries();
     }, []);
 
-    // Handle items per page change
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(Number(e.target.value));
-        setCurrentPage(1); // Reset to the first page
+        setCurrentPage(1);
     };
 
-    // Pagination logic
     const totalPages = Math.ceil(itineraries.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const selectedItineraries = itineraries.slice(startIndex, startIndex + itemsPerPage);
 
-    // Render loading state or error message
     if (error) {
         return <div className="error-message">{error}</div>;
     }

@@ -1,10 +1,8 @@
-/* Preferences.css */
-
 .preferences-container {
     max-width: 600px;
     margin: 0 auto;
     padding: 25px;
-    background-color: #f0f4f8; /* Softer background color */
+    background-color: #f0f4f8;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -50,7 +48,6 @@ input:focus, select:focus {
     outline: none;
 }
 
-/* Toggle Switch Styling */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -97,7 +94,6 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
-/* Submit Button */
 button[type="submit"] {
     width: 100%;
     padding: 12px;
@@ -115,7 +111,6 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-/* Selected Categories Styling */
 .selected-categories {
     display: flex;
     flex-wrap: wrap;
